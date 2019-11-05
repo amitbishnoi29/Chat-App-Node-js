@@ -23,7 +23,6 @@ io.on('connection',function(socket) {
     //listen to a new message
     socket.on('createMessage',function(message){
         console.log(message); 
-        //socket.emit('newMessage',message);
     });
 
     //emit a new message to client
@@ -31,6 +30,19 @@ io.on('connection',function(socket) {
     socket.emit('newMessage',{
         text:'new message'
     });
+
+    // to emit a event to every connection
+
+    io.emit('newMessage',{
+        text:'this is to every user'
+    });
+
+    // to broadcast to everyone except himself
+
+    socket.broadcast.emit('newMessage',{
+        text:"this is to every other connection"
+    });
+
 
     socket.on('disconnect',function(){
         console.log('User was disconnected');
