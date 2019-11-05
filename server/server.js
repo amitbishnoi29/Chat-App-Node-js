@@ -17,8 +17,20 @@ const io = socketIO(server);
 app.use(express.static(publicPath));
 
 
-io.on('connection',(socket) => {
+io.on('connection',function(socket) {
     console.log('New user connected');
+
+    //listen to a new message
+    socket.on('createMessage',function(message){
+        console.log(message); 
+        //socket.emit('newMessage',message);
+    });
+
+    //emit a new message to client
+
+    socket.emit('newMessage',{
+        text:'new message'
+    });
 
     socket.on('disconnect',function(){
         console.log('User was disconnected');
