@@ -1,27 +1,35 @@
-let socket = io();
+var socket = io();
 
 socket.on('connect', function () {
-    console.log('connected to server');
-
-    //creating a message
-    
+    console.log('Connected to server');
 });
 
 //listen to a new message from server
 
-socket.on('newMessage',function(message){
+socket.on('newMessage', function (message) {
     console.log(message);
-});
+    // creating a new element with message in it
 
-socket.emit('createMessage',{
-    text:'New Message',
-    from : 'abc@gmail.com',
-    time : 123
-},function(data){            // this is third argument for acknowlwdgement
-    console.log('got it',data); 
+    var li = jQuery('<li></li>');
+    li.text(`${message.from}: ${message.text}`);
+
+    jQuery('#messages').append(li);
 });
 
 socket.on('disconnect', function () {
     console.log('disconnected from server');
 
-})
+});
+
+
+jQuery('#message-form').on('submit', function (e) {
+    e.preventDefault();
+    // emit an event
+
+    socket.emit('createMessage', {
+        from: 'User',
+        text: jQuery('[name=message]').val()
+    }, function (data) {   //acknowledgement
+        console.log(data);
+    })
+});

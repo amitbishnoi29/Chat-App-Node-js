@@ -17,26 +17,29 @@ const io = socketIO(server);
 app.use(express.static(publicPath));
 
 
-io.on('connection',function(socket) {
+io.on('connection',(socket)=> {
     console.log('New user connected');
 
     //listen to a new message
     socket.on('createMessage',function(message,callback){
         console.log(message);
+        io.emit('newMessage',{
+            from:message.from,
+            text:message.text
+        });
         callback('this is acknowledgement') ;          // this is for acknowlwdgement
     });
 
     //emit a new message to client
 
-    socket.emit('newMessage',{
-        text:'new message'
-    });
+    // socket.emit('newMessage',{
+    //     from:'amit',
+    //     text:'new message'
+    // });
 
     // to emit a event to every connection
 
-    // io.emit('newMessage',{
-    //     text:'this is to every user'
-    // });
+    
 
     // to broadcast to everyone except himself
 
