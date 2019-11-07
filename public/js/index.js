@@ -25,11 +25,15 @@ socket.on('disconnect', function () {
 jQuery('#message-form').on('submit', function (e) {
     e.preventDefault();
     // emit an event
-
     socket.emit('createMessage', {
         from: 'User',
         text: jQuery('[name=message]').val()
     }, function (data) {   //acknowledgement
         console.log(data);
-    })
+       
+       document.getElementById('message').value='';
+       ;
+    });
+    //console.log('After emiting');
+    
 });
