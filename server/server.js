@@ -21,8 +21,9 @@ io.on('connection',function(socket) {
     console.log('New user connected');
 
     //listen to a new message
-    socket.on('createMessage',function(message){
-        console.log(message); 
+    socket.on('createMessage',function(message,callback){
+        console.log(message);
+        callback('this is acknowledgement') ;          // this is for acknowlwdgement
     });
 
     //emit a new message to client
@@ -33,15 +34,15 @@ io.on('connection',function(socket) {
 
     // to emit a event to every connection
 
-    io.emit('newMessage',{
-        text:'this is to every user'
-    });
+    // io.emit('newMessage',{
+    //     text:'this is to every user'
+    // });
 
     // to broadcast to everyone except himself
 
-    socket.broadcast.emit('newMessage',{
-        text:"this is to every other connection"
-    });
+    // socket.broadcast.emit('newMessage',{
+    //     text:"this is to every other connection"
+    // });
 
 
     socket.on('disconnect',function(){
