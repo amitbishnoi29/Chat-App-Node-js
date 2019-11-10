@@ -1,4 +1,4 @@
-var socket = io();
+let socket = io();
 
 socket.on('connect', function () {
     console.log('Connected to server');
@@ -10,7 +10,7 @@ socket.on('newMessage', function (message) {
     console.log(message);
     // creating a new element with message in it
 
-    var li = jQuery('<li></li>');
+    let li = jQuery('<li></li>');
     li.text(`${message.from}: ${message.text}`);
 
     jQuery('#messages').append(li);
