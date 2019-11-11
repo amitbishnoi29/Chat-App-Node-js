@@ -1,5 +1,9 @@
 const express = require('express');
 const socketIO = require('socket.io');
+const moment = require('moment');
+
+
+
 
 const http = require('http');
 const path = require('path');
@@ -25,17 +29,24 @@ io.on('connection',(socket)=> {
         console.log(message);
         io.emit('newMessage',{
             from:message.from,
-            text:message.text
+            text:message.text,
+            createdAt:moment().valueOf()
         });
         callback('this is acknowledgement') ;          // this is for acknowlwdgement
     });
 
+    // ---- Handling location Message -------
+
+    socket.on('createLocationMessage',function(coords){
+        io.emit('newLocationMessage',{
+            from : 'Anonymus',
+            url:  `https://www.google.com/maps?q=${coords.latitude},${coords.longitude}`,
+            createdAt:moment().valueOf()
+        });
+    });
+
     //emit a new message to client
 
-    // socket.emit('newMessage',{
-    //     from:'amit',
-    //     text:'new message'
-    // });
 
     // to emit a event to every connection
 
@@ -43,12 +54,12 @@ io.on('connection',(socket)=> {
 
     // to broadcast to everyone except himself
 
-    // socket.broadcast.emit('newMessage',{
+    // socket.broadcast.emit('newMessage', {
     //     text:"this is to every other connection"
     // });
 
 
-    socket.on('disconnect',function(){
+    socket.on('disconnect',function() {
         console.log('User was disconnected');
     });
 })
