@@ -53,7 +53,8 @@ locationButton.on('click',function () {
     if(!navigator.geolocation){
         return alert('Geolocation not supported')
     }
-
+    // diabling button after success case
+    locationButton.attr('disabled','disabled').text('Sending location...');
     navigator.geolocation.getCurrentPosition(function (position) {
         // emiting event to server so it can send location to everyone
         socket.emit('createLocationMessage',{
