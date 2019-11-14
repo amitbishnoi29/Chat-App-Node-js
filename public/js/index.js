@@ -57,11 +57,13 @@ locationButton.on('click',function () {
     locationButton.attr('disabled','disabled').text('Sending location...');
     navigator.geolocation.getCurrentPosition(function (position) {
         // emiting event to server so it can send location to everyone
+        locationButton.removeAttr('disabled').text('Send location');
         socket.emit('createLocationMessage',{
             latitude:position.coords.latitude,
             longitude:position.coords.longitude
         });
     },function(){
+        locationButton.removeAttr('disabled').text('Send location');
         alert('Unable to fetch location');
     })
 })
