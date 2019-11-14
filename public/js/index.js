@@ -11,7 +11,8 @@ socket.on('newMessage', function (message) {
     // creating a new element with message in it
 
     let li = jQuery('<li></li>');
-    li.text(`${message.from}: ${message.text}`);
+    let time = moment(message.createdAt).format("h:mm a");
+    li.text(`${message.from} ${time} : ${message.text}`);
 
     jQuery('#messages').append(li);
 });
@@ -20,7 +21,8 @@ socket.on('newMessage', function (message) {
 socket.on('newLocationMessage',function(message){
     let li = jQuery('<li></li>');
     let a = jQuery('<a target="_blank">My current location</a>');
-    li.text(`${message.from} : `);
+    let time = moment(message.createdAt).format("h:mm a");
+    li.text(`${message.from} ${time} : `);
     a.attr('href',message.url);
     li.append(a);
 
@@ -39,8 +41,7 @@ jQuery('#message-form').on('submit', function (e) {
         from: 'User',
         text: jQuery('[name=message]').val()
     }, function (data) {   //acknowledgement
-        console.log(data);
-       
+        
        document.getElementById('message').value='';
        ;
     });

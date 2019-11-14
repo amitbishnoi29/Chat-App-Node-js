@@ -27,7 +27,7 @@ io.on('connection',(socket)=> {
 
     //listen to a new message
     socket.on('createMessage',function(message,callback){
-        console.log(message);
+        
         io.emit('newMessage',{
             from:message.from,
             text:message.text,
