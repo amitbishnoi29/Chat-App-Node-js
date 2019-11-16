@@ -33,7 +33,7 @@ io.on('connection',(socket)=> {
             text:message.text,
             createdAt:moment().valueOf()
         });
-        callback('this is acknowledgement') ;          // this is for acknowlwdgement
+        callback() ;          // this is for acknowlwdgement
     });
 
     // ---- Handling location Message -------
