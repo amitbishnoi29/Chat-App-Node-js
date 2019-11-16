@@ -51,7 +51,11 @@ io.on('connection',(socket)=> {
 
     // to emit a event to every connection
 
-    
+    io.emit('newMessage',{
+        from:'Admin',
+        text:'Welcome to chat App',
+        createdAt:moment().valueOf()
+    })
 
     // to broadcast to everyone except himself
 
