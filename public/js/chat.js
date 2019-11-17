@@ -70,6 +70,17 @@ socket.on('disconnect', function () {
     console.log('disconnected from server');
 });
 
+socket.on('updatedUserList',function(users){
+    let ol = jQuery('<ol></ol>');
+
+    users.forEach(function (user) {
+        console.log(user);
+        ol.append(jQuery('<li></li>').text(user));
+    });
+
+    jQuery('#users').html(ol);
+})
+
 // ---------- form submition -------
 jQuery('#message-form').on('submit', function (e) {
     e.preventDefault();

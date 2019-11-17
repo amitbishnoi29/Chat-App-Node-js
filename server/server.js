@@ -2,15 +2,18 @@ const express = require('express');
 const socketIO = require('socket.io');
 
 const moment = require('moment');
-
 const http = require('http');
 const path = require('path');
 
 const app = express();
 
+const {Users} = require('./utils/users');
+
 const server = http.createServer(app); // passing express as an argument
 const port = process.env.PORT || 3000;
 const publicPath = path.join(__dirname, '/../public');
+// ---------- creating new instance of user
+const users = new Users();
 
 // connecting our socket to the server
 const io = socketIO(server);
@@ -47,11 +50,17 @@ io.on('connection', (socket) => {
     socket.on('join', function (params, callback) {
         if (!(typeof params.name === 'string' && params.name.trim().length > 0)
             || !(typeof params.room === 'string' && params.room.trim().length > 0)) {
-            callback('Username and Room name are required');
+            return callback('Username and Room name are required');
         }
 
         socket.join(params.room);
         // scoket.leave('string') leave a room
+
+        users.removeUser(socket.id);
+        users.addUser(socket.id, params.name, params.room);
+
+        // emmiting updated users List to client
+        io.to(params.room).emit('updatedUserList',users.getUserList(params.room));
 
         // io.emit => io.to('room name').emit
         // socker.broadcast.to('room name').emit()
@@ -89,7 +98,19 @@ io.on('connection', (socket) => {
 
 
     socket.on('disconnect', function () {
-        console.log('User was disconnected');
+        let user = users.removeUser(socket.id);
+        
+        if (user) {
+            // to send the newly updated list of users if any user left
+            io.emit('updatedUserList',users.getUserList(user.room));
+
+            // notifies everyone in the  room that user has left
+            io.emit('newMessage', {
+                from:'Admin',
+                text:`${user.name} has left.`,
+                createdAt:moment().valueOf()
+            });
+        }
     });
 })
 server.listen(port, () => {

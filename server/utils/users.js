@@ -2,17 +2,21 @@ class Users {
     constructor() {
         this.users = [];
     }
-    addUser (id , name , room) {
-        let user = {id , name , room};
+    addUser(id, name, room) {
+        let user = { id, name, room };
         this.users.push(user);
         return user;
     }
-    removeUser (id) {
-        this.users = this.users.filter( (user) => user.id !== id);
+    removeUser(id) {
+        let user = this.getUser(id);
+        if (user) {
+            this.users = this.users.filter((user) => user.id !== id);
+        }
+        return user;
     }
 
-    getUser (id) {
-        return this.users.filter((user) => user.id === id);
+    getUser(id) {
+        return this.users.filter((user) => user.id === id)[0];
     }
 
     getUserList(room) {
@@ -21,12 +25,12 @@ class Users {
     }
 }
 
-let user = new Users();
-user.addUser(1234,"amit",'fun');
- user.addUser(2345,'sunnu','fun');
-console.log(user.users);
+// let user = new Users();
+// user.addUser(1234,"amit",'fun');
+//  user.addUser(2345,'sunnu','fun');
+// console.log(user.users);
 // user.removeUser(1234);
 // console.log(user.users);
-console.log(user.getUserList('fun'));
 
-module.exports = {Users} ;
+
+module.exports = { Users };
