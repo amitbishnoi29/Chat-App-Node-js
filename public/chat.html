@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="./css/style.css">
     <title>chat app</title>
     <style>
-        li{
-            margin-bottom: 5%;
+        li {
+            margin-bottom: 3.8%;
         }
     </style>
 </head>
@@ -20,15 +20,14 @@
         <h3>People</h3>
         <div class="users"></div>
     </div>
-    
+
     <div class="chat__main">
-        
+
         <ol id="messages" class="chat__messages"></ol>
         <div class="chat__footer">
             <form action="" id="message-form">
-                <input id="message-input" name="message" type="text" 
-                placeholder="Enter message..."
-                autofocus autocomplete="off" >
+                <input id="message-input" name="message" type="text" placeholder="Enter message..." autofocus
+                    autocomplete="off">
                 <button>Send</button>
             </form>
             <button id="send-location">Send location</button>
@@ -46,7 +45,7 @@
             </div>
         </li>
     </script>
-    
+
     <script id="location-message-template" type="text/template">
         <li id="message">
             <div class="message__title">
@@ -64,6 +63,7 @@
     <script src="./js/libs/jquery-3.4.1.min.js"></script>
     <script src="./js/libs/moment.js"></script>
     <script src="./js/libs/mustache.js"></script>
+    <script src="./js/libs/deparam.js"></script>
     <script src="./js/chat.js"> </script>
 </body>
 

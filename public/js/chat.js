@@ -1,6 +1,6 @@
 let socket = io();
 
-// scrloing to bottom
+// scroling to bottom
 
 function scrollToBottom() {
     let messages = jQuery('#messages');
@@ -19,8 +19,38 @@ function scrollToBottom() {
     }
 }
 
+// ---------- after successful connection ----------
+// ---------- CREATING ROOM ----------------
 socket.on('connect', function () {
     console.log('Connected to server');
+    const params = jQuery.deparam(window.location.search);
+    console.log(params);
+
+    // --- emmiting an event to server ----
+    socket.emit('join', params, function (err) {
+        if (err) {
+            alert(err);
+            window.location.href = '/';
+        } else {
+            console.log('No error');
+
+            jQuery('#message-form').on('submit', function (e) {
+                e.preventDefault();
+                // emit an event
+
+                socket.emit('createMessage', {
+                    from: `${params.name}`,
+                    text: jQuery('[name=message]').val(),
+                    room : params.room
+                }, function () {   //acknowledgement
+
+                    jQuery('#message-input').val('');
+
+                });
+            });
+
+        }
+    })
 });
 
 //listen to a new message from server
@@ -40,7 +70,7 @@ socket.on('newMessage', function (message) {
 
 // listener for location
 socket.on('newLocationMessage', function (message) {
-    let time = moment(message.createdAt).format("h:mm a");
+    const time = moment(message.createdAt).format("h:mm a");
     let template = jQuery('#location-message-template').html()
     let html = Mustache.render(template, {
         url: message.text,
@@ -56,20 +86,7 @@ socket.on('disconnect', function () {
     console.log('disconnected from server');
 });
 
-
-jQuery('#message-form').on('submit', function (e) {
-    e.preventDefault();
-    // emit an event
-
-    socket.emit('createMessage', {
-        from: 'User',
-        text: jQuery('[name=message]').val()
-    }, function () {   //acknowledgement
-
-        jQuery('#message-input').val('');
-
-    });
-});
+// ---------- form submition -------
 
 //send location button handler
 
