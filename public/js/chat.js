@@ -70,7 +70,7 @@ socket.on('disconnect', function () {
     console.log('disconnected from server');
 });
 
-socket.on('updatedUserList',function(users){
+socket.on('updatedUserList',function(users) {
     let ol = jQuery('<ol></ol>');
 
     users.forEach(function (user) {
@@ -87,7 +87,6 @@ jQuery('#message-form').on('submit', function (e) {
     // emit an event
 
     socket.emit('createMessage', {
-        from: 'User',
         text: jQuery('[name=message]').val()
     }, function () {   //acknowledgement
 

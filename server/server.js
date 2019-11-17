@@ -7,7 +7,7 @@ const path = require('path');
 
 const app = express();
 
-const {Users} = require('./utils/users');
+const { Users } = require('./utils/users');
 
 const server = http.createServer(app); // passing express as an argument
 const port = process.env.PORT || 3000;
@@ -27,23 +27,32 @@ io.on('connection', (socket) => {
 
     // ------listen to a createmessage event new message--------
     socket.on('createMessage', function (message, callback) {
+        let user = users.getUser(socket.id);
+        if (user) {
+            io.to(user.room).emit('newMessage', {
+                from: user.name,
+                text: message.text,
+                createdAt: moment().valueOf()
+            });
+            callback(); // this is for acknowlwdgement
+        }
 
-        io.emit('newMessage', {
-            from: message.from,
-            text: message.text,
-            createdAt: moment().valueOf()
-        });
-        callback();          // this is for acknowlwdgement
+
     });
 
     // ---- Handling location Message -------
 
     socket.on('createLocationMessage', function (coords) {
-        io.emit('newLocationMessage', {
-            from: 'Anonymus',
-            url: `https://www.google.com/maps?q=${coords.latitude},${coords.longitude}`,
-            createdAt: moment().valueOf()
-        });
+        let user = users.getUser(socket.id);
+
+        if (user) {
+            io.to(user.room).emit('newLocationMessage', {
+                from: user.name,
+                url: `https://www.google.com/maps?q=${coords.latitude},${coords.longitude}`,
+                createdAt: moment().valueOf()
+            });
+        }
+
     });
 
     // _-------_ JOIN Message -----
@@ -60,7 +69,7 @@ io.on('connection', (socket) => {
         users.addUser(socket.id, params.name, params.room);
 
         // emmiting updated users List to client
-        io.to(params.room).emit('updatedUserList',users.getUserList(params.room));
+        io.to(params.room).emit('updatedUserList', users.getUserList(params.room));
 
         // io.emit => io.to('room name').emit
         // socker.broadcast.to('room name').emit()
@@ -73,10 +82,10 @@ io.on('connection', (socket) => {
             createdAt: moment().valueOf()
         });
 
-        socket.broadcast.to(params.room).emit('newMessage',{
-            from:'Admin',
-            text:`${params.name} joined`,
-            createdAt:moment().valueOf()
+        socket.broadcast.to(params.room).emit('newMessage', {
+            from: 'Admin',
+            text: `${params.name} joined`,
+            createdAt: moment().valueOf()
         });
         callback();
     })
@@ -99,16 +108,16 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', function () {
         let user = users.removeUser(socket.id);
-        
+
         if (user) {
             // to send the newly updated list of users if any user left
-            io.emit('updatedUserList',users.getUserList(user.room));
+            io.to(user.room).emit('updatedUserList', users.getUserList(user.room));
 
             // notifies everyone in the  room that user has left
-            io.emit('newMessage', {
-                from:'Admin',
-                text:`${user.name} has left.`,
-                createdAt:moment().valueOf()
+            io.to(user.room).emit('newMessage', {
+                from: 'Admin',
+                text: `${user.name} has left.`,
+                createdAt: moment().valueOf()
             });
         }
     });
