@@ -25,7 +25,7 @@ io.on('connection', (socket) => {
     // ------listen to a createmessage event new message--------
     socket.on('createMessage', function (message, callback) {
 
-        io.to(message.room).emit('newMessage', {
+        io.emit('newMessage', {
             from: message.from,
             text: message.text,
             createdAt: moment().valueOf()

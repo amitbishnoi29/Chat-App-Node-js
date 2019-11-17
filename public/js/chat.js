@@ -24,31 +24,15 @@ function scrollToBottom() {
 socket.on('connect', function () {
     console.log('Connected to server');
     const params = jQuery.deparam(window.location.search);
-    console.log(params);
+    console.log(params); 
 
     // --- emmiting an event to server ----
-    socket.emit('join', params, function (err) {
-        if (err) {
+    socket.emit('join',params,function(err){
+        if(err) {
             alert(err);
-            window.location.href = '/';
+            window.location.href='/';
         } else {
             console.log('No error');
-
-            jQuery('#message-form').on('submit', function (e) {
-                e.preventDefault();
-                // emit an event
-
-                socket.emit('createMessage', {
-                    from: `${params.name}`,
-                    text: jQuery('[name=message]').val(),
-                    room : params.room
-                }, function () {   //acknowledgement
-
-                    jQuery('#message-input').val('');
-
-                });
-            });
-
         }
     })
 });
@@ -87,6 +71,19 @@ socket.on('disconnect', function () {
 });
 
 // ---------- form submition -------
+jQuery('#message-form').on('submit', function (e) {
+    e.preventDefault();
+    // emit an event
+
+    socket.emit('createMessage', {
+        from: 'User',
+        text: jQuery('[name=message]').val()
+    }, function () {   //acknowledgement
+
+        jQuery('#message-input').val('');
+
+    });
+});
 
 //send location button handler
 
