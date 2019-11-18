@@ -64,12 +64,12 @@ io.on('connection', (socket) => {
             
         }
 
-        // let users1 = users.getUserList(params.room.trim().toLowerCase());
-        //     users1.forEach( user => {
-        //         if (user.toLowerCase() === params.name.trim().toLowerCase()) {
-        //             return callback(`User with username ${params.name} already exist. Please choose a different username.`)
-        //         }
-        //     });
+        let users1 = users.getUserList(params.room.trim().toLowerCase());
+            users1.forEach( user => {
+                if (user.trim().toLowerCase() === params.name.trim().toLowerCase()) {
+                    return callback(`User with username ${params.name} already exist. Please choose a different username.`)
+                }
+            });
         params.room = params.room.trim().toLowerCase();
         socket.join(params.room);
         // scoket.leave('string') leave a room
