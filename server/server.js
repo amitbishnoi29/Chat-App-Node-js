@@ -61,41 +61,47 @@ io.on('connection', (socket) => {
             || !(typeof params.room === 'string' && params.room.trim().length > 0)) {
             return callback('Username and Room name are required');
 
-            
+
         }
-
+        // ---- checking is user already exist ----
         let users1 = users.getUserList(params.room.trim().toLowerCase());
-            users1.forEach( user => {
-                if (user.trim().toLowerCase() === params.name.trim().toLowerCase()) {
-                    return callback(`User with username ${params.name} already exist. Please choose a different username.`)
-                }
-            });
-        params.room = params.room.trim().toLowerCase();
-        socket.join(params.room);
-        // scoket.leave('string') leave a room
+        let checkUserExist = true;
+        users1.forEach(user => {
+            if (user.trim().toLowerCase() === params.name.trim().toLowerCase()) {
+                checkUserExist = false;
+                return callback(`User with username ${params.name} already exist. Please choose a different username.`);
+            }
+        });
 
-        users.removeUser(socket.id);
-        users.addUser(socket.id, params.name.trim(), params.room);
 
         // emmiting updated users List to client
-        io.to(params.room).emit('updatedUserList', users.getUserList(params.room));
+        if (checkUserExist) {
+            params.room = params.room.trim().toLowerCase();
+            socket.join(params.room);
+            // scoket.leave('string') leave a room
 
-        // io.emit => io.to('room name').emit
-        // socker.broadcast.to('room name').emit()
-        // scoket.emit()
+            users.removeUser(socket.id);
+            users.addUser(socket.id, params.name.trim(), params.room);
+            io.to(params.room).emit('updatedUserList', users.getUserList(params.room));
 
-        // targetting a specific user
-        socket.emit('newMessage', {
-            from: 'Admin',
-            text: 'Welcome to chat App',
-            createdAt: moment().valueOf()
-        });
+            // io.emit => io.to('room name').emit
+            // socker.broadcast.to('room name').emit()
+            // scoket.emit()
 
-        socket.broadcast.to(params.room).emit('newMessage', {
-            from: 'Admin',
-            text: `${params.name} joined`,
-            createdAt: moment().valueOf()
-        });
+            // targetting a specific user
+            socket.emit('newMessage', {
+                from: 'Admin',
+                text: 'Welcome to chat App',
+                createdAt: moment().valueOf()
+            });
+
+            socket.broadcast.to(params.room).emit('newMessage', {
+                from: 'Admin',
+                text: `${params.name} joined`,
+                createdAt: moment().valueOf()
+            });
+        }
+
         callback();
     })
 
