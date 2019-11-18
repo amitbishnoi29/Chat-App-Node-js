@@ -62,11 +62,11 @@ io.on('connection', (socket) => {
             return callback('Username and Room name are required');
         }
 
-        socket.join(params.room);
+        socket.join(params.room.trim());
         // scoket.leave('string') leave a room
 
         users.removeUser(socket.id);
-        users.addUser(socket.id, params.name, params.room);
+        users.addUser(socket.id, params.name, params.room.trim());
 
         // emmiting updated users List to client
         io.to(params.room).emit('updatedUserList', users.getUserList(params.room));
