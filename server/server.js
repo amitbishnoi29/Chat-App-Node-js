@@ -60,13 +60,22 @@ io.on('connection', (socket) => {
         if (!(typeof params.name === 'string' && params.name.trim().length > 0)
             || !(typeof params.room === 'string' && params.room.trim().length > 0)) {
             return callback('Username and Room name are required');
+
+            
         }
 
-        socket.join(params.room.trim());
+        // let users1 = users.getUserList(params.room.trim().toLowerCase());
+        //     users1.forEach( user => {
+        //         if (user.toLowerCase() === params.name.trim().toLowerCase()) {
+        //             return callback(`User with username ${params.name} already exist. Please choose a different username.`)
+        //         }
+        //     });
+        params.room = params.room.trim().toLowerCase();
+        socket.join(params.room);
         // scoket.leave('string') leave a room
 
         users.removeUser(socket.id);
-        users.addUser(socket.id, params.name, params.room.trim());
+        users.addUser(socket.id, params.name.trim(), params.room);
 
         // emmiting updated users List to client
         io.to(params.room).emit('updatedUserList', users.getUserList(params.room));

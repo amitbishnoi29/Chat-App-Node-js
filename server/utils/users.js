@@ -3,7 +3,7 @@ class Users {
         this.users = [];
     }
     addUser(id, name, room) {
-        let user = { id, name, room };
+        let user = { id, name, room } ;
         this.users.push(user);
         return user;
     }
@@ -12,7 +12,7 @@ class Users {
         if (user) {
             this.users = this.users.filter((user) => user.id !== id);
         }
-        return user;
+        return user ;
     }
 
     getUser(id) {
